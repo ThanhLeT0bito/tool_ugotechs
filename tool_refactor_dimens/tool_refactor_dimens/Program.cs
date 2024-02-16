@@ -5,14 +5,16 @@ using System.Xml;
 
 string folderPath = @"C:\Users\GF\Documents\UGOTechs\thanh\iOrder\iOrder.AppFlows";
 string outputFilePath = @"C:\Users\GF\Documents\UGOTechs\tool\outputKey.txt";
-//string filter = "NegativeBaseGroupSpacing";
 
-string[] files = Directory.GetFiles(folderPath, "*.*", SearchOption.AllDirectories);
+var files = Directory.EnumerateFiles(folderPath, "*.*", SearchOption.AllDirectories)
+                     .Where(file => file.EndsWith(".cs") || file.EndsWith(".xaml"))
+                     .ToArray();
 string[] filters = File.ReadAllLines(outputFilePath);
 
 string[] excludedFiles = new string[]
         {
             @"MobileConstants.cs",
+            @"GlobalConstant.cs",
             @"Dimens_1920x1080.xaml",
             @"Dimens_1920x1080_240.xaml",
             @"Dimens_1920x1440.xaml",
@@ -25,31 +27,32 @@ string[] excludedFiles = new string[]
         };
 
 
-int totalFiles = 0;
+///Main
+
 bool check = false;
+
 foreach (string filter in filters)
 {
-    totalFiles = 0;
     check = false;
     foreach (var file in files)
     {
-        if (Array.IndexOf(excludedFiles, Path.GetFileName(file)) != -1 && !file.EndsWith(".dll"))
+        if (Array.IndexOf(excludedFiles, Path.GetFileName(file)) != -1)
         {
-            if (CountString(file, filter) > 1)
+            if (CheckCountFilter(file, filter))
             {
                 check = true;
                 break;
             }
         }
-        if (Array.IndexOf(excludedFiles, Path.GetFileName(file)) == -1 && FileContainsString(file, filter) && !file.EndsWith(".dll"))
+        else if (FileContainsString(file, filter))
         {
-            totalFiles++;
+            check = true;
+            break;
         }
     }
     if (check)
         continue;
-    if (totalFiles == 0)
-        Console.WriteLine(filter);
+     Console.WriteLine(filter);
 }
 
 //readAndWritexKey();
@@ -58,20 +61,29 @@ Console.WriteLine("DONE:");
 
 Console.ReadLine();
 
-static int CountString(string filePath, string filter)
+/// FUNCTION
+
+static bool CheckCountFilter(string filePath, string filter)
 {
     int count = 0;
     string line;
 
-    using (StreamReader sr = new StreamReader(filePath))
-    {
-        while ((line = sr.ReadLine()) != null)
-        {
-            count += Regex.Matches(line, filter).Count;
-        }
-    }
+    string content = File.ReadAllText(filePath);
+    filter = "StaticResource " + filter;
+    return content.Contains(filter); ;
 
-    return count;
+    //using (StreamReader sr = new StreamReader(filePath))
+    //{
+    //    while ((line = sr.ReadLine()) != null)
+    //    {
+    //        filter = "StaticResource " + filter;
+    //        //count += Regex.Matches(line, filter).Count;
+    //        if(line.Contains(filter))
+    //            return true;
+    //    }
+    //}
+
+    return false;
 }
 
 static bool FileContainsString(string filePath, string filter)
@@ -81,7 +93,9 @@ static bool FileContainsString(string filePath, string filter)
         if (File.Exists(filePath))
         {
             string content = File.ReadAllText(filePath);
-            return content.Contains(filter);
+            string filter1 = "StaticResource " + filter;
+            string filter2 = "\"" + filter + "\"";
+            return content.Contains(filter1) || content.Contains(filter2);
         }
         else
         {
@@ -94,7 +108,7 @@ static bool FileContainsString(string filePath, string filter)
     }
 }
 
-
+//lọc key từ dimens small
 static void readAndWritexKey()
 {
     string filePath = @"C:\Users\GF\Documents\UGOTechs\thanh\iOrder\iOrder.AppFlows\iOrder.Mobile\Resources\Styles\Dimens_Small.xaml";
