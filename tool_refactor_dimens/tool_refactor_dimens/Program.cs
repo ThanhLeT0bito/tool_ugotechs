@@ -65,25 +65,10 @@ Console.ReadLine();
 
 static bool CheckCountFilter(string filePath, string filter)
 {
-    int count = 0;
-    string line;
-
     string content = File.ReadAllText(filePath);
     filter = "StaticResource " + filter;
-    return content.Contains(filter); ;
 
-    //using (StreamReader sr = new StreamReader(filePath))
-    //{
-    //    while ((line = sr.ReadLine()) != null)
-    //    {
-    //        filter = "StaticResource " + filter;
-    //        //count += Regex.Matches(line, filter).Count;
-    //        if(line.Contains(filter))
-    //            return true;
-    //    }
-    //}
-
-    return false;
+    return content.Contains(filter); 
 }
 
 static bool FileContainsString(string filePath, string filter)
