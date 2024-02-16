@@ -30,6 +30,7 @@ string[] excludedFiles = new string[]
 
 ///Main
 
+int total = 0;
 using (StreamWriter writer = new StreamWriter(list_key_delete, false))
 {
     foreach (string filter in filters)
@@ -56,13 +57,14 @@ using (StreamWriter writer = new StreamWriter(list_key_delete, false))
         {
             writer.WriteLine(filter);
             Console.WriteLine(filter);
+            total++;
         }
     }
 }
 
 //readAndWritexKey();
 
-Console.WriteLine("DONE:");
+Console.WriteLine("DONE:" + total);
 
 Console.ReadLine();
 
@@ -85,7 +87,8 @@ static bool FileContainsString(string filePath, string filter)
             string content = File.ReadAllText(filePath);
             string filter1 = "StaticResource " + filter;
             string filter2 = "\"" + filter + "\"";
-            return content.Contains(filter1) || content.Contains(filter2);
+            string filter3 = "DimenConstants." + filter;
+            return content.Contains(filter1) || content.Contains(filter2) || content.Contains(filter3);
         }
         else
         {
