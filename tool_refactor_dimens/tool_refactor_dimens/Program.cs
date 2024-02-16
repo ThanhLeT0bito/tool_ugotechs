@@ -5,6 +5,7 @@ using System.Xml;
 
 string folderPath = @"C:\Users\GF\Documents\UGOTechs\thanh\iOrder\iOrder.AppFlows";
 string outputFilePath = @"C:\Users\GF\Documents\UGOTechs\tool\outputKey.txt";
+string list_key_delete = @"C:\Users\GF\Documents\UGOTechs\tool\result_key_delete.txt";
 
 var files = Directory.EnumerateFiles(folderPath, "*.*", SearchOption.AllDirectories)
                      .Where(file => file.EndsWith(".cs") || file.EndsWith(".xaml"))
@@ -29,30 +30,34 @@ string[] excludedFiles = new string[]
 
 ///Main
 
-bool check = false;
-
-foreach (string filter in filters)
+using (StreamWriter writer = new StreamWriter(list_key_delete, false))
 {
-    check = false;
-    foreach (var file in files)
+    foreach (string filter in filters)
     {
-        if (Array.IndexOf(excludedFiles, Path.GetFileName(file)) != -1)
+        bool check = false;
+        foreach (var file in files)
         {
-            if (CheckCountFilter(file, filter))
+            string fileName = Path.GetFileName(file);
+            if (Array.IndexOf(excludedFiles, fileName) != -1)
+            {
+                if (CheckCountFilter(file, filter))
+                {
+                    check = true;
+                    break;
+                }
+            }
+            else if (FileContainsString(file, filter))
             {
                 check = true;
                 break;
             }
         }
-        else if (FileContainsString(file, filter))
+        if (!check)
         {
-            check = true;
-            break;
+            writer.WriteLine(filter);
+            Console.WriteLine(filter);
         }
     }
-    if (check)
-        continue;
-     Console.WriteLine(filter);
 }
 
 //readAndWritexKey();
