@@ -45,7 +45,6 @@ TinyNegativeMarginLeftRight
 TinyNegativeMarginRight
 FontIconHeight
 VeryTinyMarginLeft
-AvatarMargin
 SettingMenuPadding
 LabelMarginNegative
 SettingMenuHeight
@@ -342,8 +341,6 @@ QRCodeAnimationViewSize
 QRCodeScanViewPopupHeight
 ProductRowCountDisplay
 NegativeSmallRightTinyBottomMargin
-LsButtonBottomWidth
-LsClaimDeviceUltraMarginTop
 BoxProgressBarHeight
 TextFieldTitleFontSize
 NegativeBasePopupMarginTop
