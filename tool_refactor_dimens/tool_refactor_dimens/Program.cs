@@ -10,23 +10,9 @@ string list_key_delete = @"C:\Users\GF\Documents\UGOTechs\tool\result_key_delete
 
 var files = Directory.EnumerateFiles(folderPath, "*.*", SearchOption.AllDirectories)
                      .Where(file => file.EndsWith(".cs") || file.EndsWith(".xaml"))
-                     .ToArray();
+                     .ToList();
+files.Add(@"C:\Users\GF\Documents\UGOTechs\thanh\iOrder\iOrder.Core\iOrder.Utilities\Constants\GlobalConstant.cs");
 string[] filters = File.ReadAllLines(outputFilePath);
-
-string[] excludedFiles = new string[]
-        {
-            @"MobileConstants.cs",
-            @"GlobalConstant.cs",
-            @"Dimens_1920x1080.xaml",
-            @"Dimens_1920x1080_240.xaml",
-            @"Dimens_1920x1440.xaml",
-            @"Dimens_720x1280.xaml",
-            @"Dimens_720x1440.xaml",
-            @"Dimens_Large.xaml",
-            @"Dimens_Normal.xaml",
-            @"Dimens_Small.xaml",
-            @"Dimens_Small_Landscape.xaml"
-        };
 
 string[] listAllPathFileDelete = new string[]
 {
@@ -44,11 +30,11 @@ string[] listAllPathFileDelete = new string[]
 };
 
 
+
 ///Main
 
 findListKeyUnused();
 //deleteAllfile();
-
 
 Console.WriteLine("DONE");
 Console.ReadLine();
@@ -146,8 +132,7 @@ void findListKeyUnused()
             bool check = false;
             foreach (var file in files)
             {
-                string fileName = Path.GetFileName(file);
-                if (Array.IndexOf(excludedFiles, fileName) != -1)
+                if (Array.IndexOf(listAllPathFileDelete, file) != -1)
                 {
                     if (CheckCountFilter(file, filter))
                     {
@@ -181,7 +166,7 @@ static bool CheckCountFilter(string filePath, string filter)
     string content = File.ReadAllText(filePath);
     string newfilter = "StaticResource " + filter;
 
-    if (filePath.EndsWith("GlobalConstant.cs"))
+    if (filePath.EndsWith(".cs"))
     {
         filter = "\"" + filter + "\"";
         return FilterAppearsTwice(content, filter);
